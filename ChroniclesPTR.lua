@@ -1,4 +1,5 @@
 local DELAY_SEC = 0.250
+local DELAY_2 = 0.050
 
 local buffs_normal = {
 	21564,	-- fort
@@ -29,6 +30,10 @@ local buffs_heal = {
 
 local buffs_melee = {
 	17626,	-- flask: titans
+	17538,	-- Elixir of the Mongoose
+	17038,	-- Winterfall Firewater
+	16323,	-- Juju Power
+	18192,	-- Grilled Squid - Increased Agility 10
 }
 
 local buffs_healer = {
@@ -39,6 +44,11 @@ local buffs_healer = {
 
 local buffs_caster = {
 	17628,	-- flask: supreme power
+	18194,	-- nightfin soup mp5
+	24363,	-- mageblood potion mp5
+	17539,	-- Greater Arcane Elixir
+	26276,	-- Elixir of Greater Firepower
+	11474,	-- Elixir of Shadow Power
 }
 
 local class_buffs = {
@@ -48,7 +58,7 @@ local class_buffs = {
 	["Paladin"]	= buffs_healer,
 	["Priest"]	= buffs_healer,
 	["Rogue"]	= buffs_melee,
-	["Shaman"]	= buffs_melee,
+	["Shaman"]	= buffs_healer,
 	["Warlock"]	= buffs_caster,
 	["Warrior"]	= buffs_melee,
 }
@@ -56,7 +66,7 @@ local class_buffs = {
 --------------------------------------------------------------------------------
 
 local frame = CreateFrame("frame")
-local raid_lastupdate = 0
+local raid_nextupdate = 0
 local raid_currentmember = 1
 local raid_onlytarget = true
 local raid_function = nil
@@ -64,23 +74,28 @@ local raid_function = nil
 --------------------------------------------------------------------------------
 
 local function print(text)
-	DEFAULT_CHAT_FRAME:AddMessage(text, 1, 0.6, 0.9)
+	DEFAULT_CHAT_FRAME:AddMessage(text, 1, 1, 0.5)
 end
 
 local function raid_update()
-	if GetTime() - raid_lastupdate > DELAY_SEC then
+	if GetTime() > raid_nextupdate then
 		local unit = "raid" .. raid_currentmember
 
 		if not UnitExists(unit) then
 			frame:SetScript("OnUpdate", nil)
+			print("-- DONE --")
 			return
 		end
 
-		if UnitIsUnit("player", unit) then
+		if UnitIsUnit("player", unit) or not UnitIsConnected(unit) then
+			print("Ignoring: " .. UnitName(unit))
 			raid_currentmember = raid_currentmember + 1
+			raid_nextupdate = GetTime() + DELAY_2
+			raid_onlytarget = true
 		else
 			if raid_onlytarget then
-				print("Target: " .. raid_currentmember)
+				print("Targeting: [" .. raid_currentmember .. "] " .. UnitName(unit))
+				ClearTarget()
 				TargetUnit(unit)
 			else
 				if UnitIsUnit("target", unit) then
@@ -88,10 +103,10 @@ local function raid_update()
 				end
 				raid_currentmember = raid_currentmember + 1
 			end
-		end
 
-		raid_onlytarget = not raid_onlytarget
-		raid_lastupdate = GetTime()
+			raid_nextupdate = GetTime() + DELAY_SEC
+			raid_onlytarget = not raid_onlytarget
+		end
 	end
 end
 
@@ -99,12 +114,15 @@ local function raid_foreach(func)
 	if frame:GetScript("OnUpdate") then
 		print("Another command is being executed right now.")
 	else
+		print("-- COMMAND --")
 		raid_currentmember = 1
 		raid_onlytarget = true
 		raid_function = func
 		frame:SetScript("OnUpdate", raid_update)
 	end
 end
+
+--------------------------------------------------------------------------------
 
 local function cmd(text)
 	SendChatMessage(text, "SAY")
@@ -122,9 +140,17 @@ local function cast_list(list)
 	end
 end
 
+--------------------------------------------------------------------------------
+
 local function gm_die()
 	raid_foreach(function(unit)
 		cmd(".die")
+	end)
+end
+
+local function gm_tp()
+	raid_foreach(function(unit)
+		cmd(".namego")
 	end)
 end
 
@@ -145,10 +171,22 @@ local function gm_rev()
 	end)
 end
 
+local function gm_skills()
+	raid_foreach(function(unit)
+		cmd(".maxskill")
+		cmd(".learn all_recipes enchanting")
+		cmd(".learn all_recipes engineering")
+	end)
+end
+
 --------------------------------------------------------------------------------
 
-SLASH_PTR_DIE1 = "/die"
-SlashCmdList["PTR_DIE"] = gm_die
+local function make_chatcommand(name, func)
+	setglobal("SLASH_PTR_" .. name .. "1", "/" .. name)
+	SlashCmdList["PTR_" .. name] = func
+end
 
-SLASH_PTR_REV1 = "/rev"
-SlashCmdList["PTR_REV"] = gm_rev
+make_chatcommand("die", gm_die)
+make_chatcommand("tp", gm_tp)
+make_chatcommand("rev", gm_rev)
+make_chatcommand("skills", gm_skills)

@@ -124,13 +124,17 @@ local function print(text)
 	DEFAULT_CHAT_FRAME:AddMessage(text, 1, 1, 0.5)
 end
 
+local function stop()
+	frame:SetScript("OnUpdate", nil)
+	print("-- DONE --")
+end
+
 local function raid_update()
 	if GetTime() > raid_nextupdate then
 		local unit = "raid" .. raid_currentmember
 
 		if not UnitExists(unit) then
-			frame:SetScript("OnUpdate", nil)
-			print("-- DONE --")
+			stop()
 			return
 		end
 
@@ -205,15 +209,16 @@ local function gm_rev()
 	raid_foreach(function(unit)
 		cmd(".namego")
 		cmd(".revive")
+
 		cmd(".cooldown")
 		cmd(".repairitems")
 		buff_list(buffs_heal)
 		buff_list(buffs_normal)
 		--buff_list(buffs_world)
 
-		local class_specific_buffs = class_buffs[UnitClass(unit)]
-		if class_specific_buffs then
-			buff_list(class_specific_buffs)
+		local my_buffs = class_buffs[UnitClass(unit)]
+		if my_buffs then
+			buff_list(my_buffs)
 		end
 	end)
 end
@@ -224,6 +229,10 @@ local function gm_skills()
 		cmd(".learn all_recipes enchanting")
 		cmd(".learn all_recipes engineering")
 	end)
+end
+
+local function gm_stop()
+	stop()
 end
 
 --------------------------------------------------------------------------------
@@ -237,3 +246,4 @@ make_chatcommand("die", gm_die)
 make_chatcommand("tp", gm_tp)
 make_chatcommand("rev", gm_rev)
 make_chatcommand("skills", gm_skills)
+make_chatcommand("stop", gm_stop)

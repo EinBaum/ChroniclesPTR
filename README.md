@@ -18,3 +18,7 @@ Teleport everyone to you, resurrect and buff:
 Max skills, learn enchanting & engineering:
 
 	/skills
+
+Special: Stop current operation:
+
+	/stop

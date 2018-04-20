@@ -1,24 +1,27 @@
 # Chronicles PTR Scripts
 
 - You need to be a GM
-- You need to be IN THE RAID
+- You need to be in a raid for the raid functions
+- You need to target a player for the single player functions
 
-Command to kill everyone in the raid:
+## Raid Functions
 
-	/die
+    /die                Kill everyone in the raid
 
-Teleport everyone in the raid to you:
+    /tp                 Teleport everyone in the raid to you
 
-	/tp
+    /rev                Teleport, rezz and buff
 
-Teleport everyone to you, resurrect and buff:
+    /stop               Stop current raid operation
 
-	/rev
+    /foreach CMD        Run command for every player in the raid
 
-Max skills, learn enchanting & engineering:
+## Single Player Functions
 
-	/skills
+    /skills             Max skills, enchanting, engineering
 
-Special: Stop current operation:
+    /bags               Gives 4 bags to a player
 
-	/stop
+    /gear               Gives full gear set to a player
+
+    /rep                Exalted reputation for relevant factions

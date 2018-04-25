@@ -18,7 +18,7 @@
 
 ## Single Player Functions
 
-    /skills             Max skills, enchanting, engineering
+    /skills             Max skills, enchanting, engineering, first aid, riding
 
     /bags               Gives 4 bags to a player
 

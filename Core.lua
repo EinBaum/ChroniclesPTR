@@ -115,6 +115,22 @@ local function give_gearlist(list)
 	end
 end
 
+local function just_buff_single(unit)
+	cmd(".namego")
+	cmd(".revive")
+
+	cmd(".cooldown")
+	cmd(".repairitems")
+	buff_list(buffs_heal)
+	buff_list(buffs_normal)
+	--buff_list(buffs_world)
+
+	local my_buffs = buffs_class[UnitClass(unit)]
+	if my_buffs then
+		buff_list(my_buffs)
+	end
+end
+
 --------------------------------------------------------------------------------
 
 local function gm_raid_die()
@@ -129,26 +145,20 @@ local function gm_raid_tp()
 	end)
 end
 
-local function gm_raid_rev()
+local function gm_raid_buff()
 	raid_foreach(function(unit)
-		cmd(".namego")
-		cmd(".revive")
-
-		cmd(".cooldown")
-		cmd(".repairitems")
-		buff_list(buffs_heal)
-		buff_list(buffs_normal)
-		--buff_list(buffs_world)
-
-		local my_buffs = buffs_class[UnitClass(unit)]
-		if my_buffs then
-			buff_list(my_buffs)
-		end
+		just_buff_single(unit)
 	end)
 end
 
 local function gm_raid_stop()
 	stop()
+end
+
+local function gm_buffsingle()
+	ontarget(function(unit)
+		just_buff_single(unit)
+	end)
 end
 
 local function gm_skills()
@@ -225,9 +235,10 @@ make_chatcommand("gm", print_help)
 
 make_chatcommand("die", gm_raid_die)
 make_chatcommand("tp", gm_raid_tp)
-make_chatcommand("rev", gm_raid_rev)
+make_chatcommand("buff", gm_raid_buff)
 make_chatcommand("stop", gm_raid_stop)
 
+make_chatcommand("buffsingle", gm_buffsingle)
 make_chatcommand("skills", gm_skills)
 make_chatcommand("bags", gm_bags)
 make_chatcommand("gear", gm_gear)

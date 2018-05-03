@@ -6,17 +6,19 @@
 
 ## Raid Functions
 
+    /buff               Teleport, rezz and buff
+
     /die                Kill everyone in the raid
 
     /tp                 Teleport everyone in the raid to you
-
-    /rev                Teleport, rezz and buff
 
     /stop               Stop current raid operation
 
     /foreach CMD        Run command for every player in the raid
 
 ## Single Player Functions
+
+	/buffsingle         Same as /buff but affects the target only
 
     /skills             Max skills, enchanting, engineering, first aid, riding
 

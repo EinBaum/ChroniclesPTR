@@ -31,9 +31,17 @@ local buffs_paladin = {
 	18194,	-- nightfin soup mp5
 	22790,	-- DMN beer spirit
 }
-
-local buffs_priest = buffs_paladin
 local buffs_shaman = buffs_paladin
+
+local buffs_priest = {
+	17627,	-- flask: distilled wisdom
+	24363,	-- mageblood potion mp5
+	18194,	-- nightfin soup mp5
+	22790,	-- DMN beer spirit
+-- shadow priest
+	17539,	-- Greater Arcane Elixir
+	11474,	-- Elixir of shadowpower
+}
 
 local buffs_rogue = {
 	17626,	-- flask: titans
@@ -89,6 +97,8 @@ ChroniclesPTR_buffs_normal = {
 
 	17548,	-- grt shadow prot
 	17546,	-- grt nature prot
+	17543,	-- grt fire prot
+	17544,	-- grt frost prot
 	24382,	-- zanza
 	3593,	-- Elixir of Fortitude
 }
@@ -108,4 +118,5 @@ ChroniclesPTR_buffs_heal = {
 	10929,	-- renew r9
 	25299,	-- rejuvenation r11
 	9858,	-- regrowth r9
+	10901,	-- power word: shield
 }
